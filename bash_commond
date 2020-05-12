@@ -64,3 +64,11 @@ perl get_all_intron_bed.pl Bfra_R1V1.fa.all.gtf >part.intron.bed
  search jbrowse
  
  http://weatherby.genetics.utah.edu/MAKER/wiki/index.php/MAKER_Tutorial_for_GMOD_Online_Training_2014
+
+ c Bfra_CDS.pep.fa| grep ">"  |sed "s#>##" >all_gene_list.txt
+ c all_gene_list.txt | sort >A.txt
+ 1375  c qualified_gene_list.txt | sort >B.txt
+ 1376  comm A.txt B.txt -2 -3
+ 1377  comm A.txt B.txt -2 -3| wc -l
+ 1378  wc -l *list.txt
+ 1379  comm A.txt B.txt -2 -3 >gene_to_be_checked_list.txt
