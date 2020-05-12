@@ -8,8 +8,16 @@ makeblastdb -in protein.fa -input_type fasta -dbtype prot -titleb  PM8_NEW -out 
 
 
 # split gff non-seq part
-cat Bfra_R1V1.fa.all.gff | grep ^tig | awk '{print $_>"part."$2".gff"}'
-###############################################
+cat Bfra_R1V1.fa.all.gff | grep ^tig | grep -v "match_part" |awk '{print $_>"part."$2".gff"}'
+mv part...gff part.genome.gff
+
+c part.est2genome.gff| awk '{print $1"\t"$4"\t"$5}' | sort -k1,1 -k2,2n -k3,3n >est2genome.bed
+bedtools merge -i est2genome.bed | awk '{print $1"\test2genome\texpressed_sequence_match\t"$2"\t"$3"\t111\t+\t.\t"$1}' >part.est2genome.gff
+
+c part.protein2genome.gff|awk '{print $1"\t"$4"\t"$5}' | sort -k1,1 -k2,2n -k3,3n >protein2genome.bed
+bedtools merge -i protein2genome.bed | awk '{print $1"\tprotein2genome\tprotein_match\t"$2"\t"$3"\t111\t+\t.\t"$1}' >part.protein2genome.gff
+
+#############################################
 blastx      909952
 protein2genome      846110
 tblastx      343956
@@ -26,7 +34,20 @@ repeatrunner      46
 #################################################
 
 cat Bfra_R1V1.fa.all.gff | awk '$2=="maker"' | awk '$3=="gene"' | grep ^tig | awk '{print $_>"gene."$2".gff"}'
+cat Bfra_R1V1.fa.all.gff | awk '$2=="maker"' | awk '$3=="CDS"' | grep ^tig | awk '{print $_>"CDS."$2".gff"}'
 
-for i in `echo repeatmasker est2genome protein2genome augustus `;
+for i in `echo repeatmasker est2genome protein2genome augustus_masked`;
 	bedtools intersect -wo -a gene.maker.gff -b part.$i.gff | awk '{print $19/($5-$4+1)"\t"$_}' >intersect.$i.txt
 done
+for i in `echo repeatmasker est2genome protein2genome augustus_masked`;do bedtools intersect -wo -a CDS.maker.gff -b part.$i.gff | awk '{print $19/($5-$4+1)"\t"$_}' >intersect.$i.txt;done
+##########第一列是overlap的百分比
+perl get_geneID_for_checkup.pl
+##
+
+#########gff to gtf#######################################
+gffread ../Bfra_R1V1.fa.all.gff -T -o Bfra_R1V1.fa.all.gtf
+##########################################################
+##########get intron bet##################################
+perl get_all_intron_bed.pl annotation/gencode.v28.annotation.gtf | bedtools getfasta -s -name -fi annotation/GRCh38.p12.genome.fa -bed - -fo annotation/gencode.v28.intron.fa
+perl get_all_intron_bed.pl Bfra_R1V1.fa.all.gtf >part.intron.bed
+
