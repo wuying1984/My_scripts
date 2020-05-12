@@ -64,6 +64,7 @@ perl get_all_intron_bed.pl Bfra_R1V1.fa.all.gtf >part.intron.bed
  search jbrowse
  
  http://weatherby.genetics.utah.edu/MAKER/wiki/index.php/MAKER_Tutorial_for_GMOD_Online_Training_2014
+ http://gmod.org/wiki/MAKER_Tutorial_2013
 
  c Bfra_CDS.pep.fa| grep ">"  |sed "s#>##" >all_gene_list.txt
  c all_gene_list.txt | sort >A.txt
@@ -72,3 +73,9 @@ perl get_all_intron_bed.pl Bfra_R1V1.fa.all.gtf >part.intron.bed
  1377  comm A.txt B.txt -2 -3| wc -l
  1378  wc -l *list.txt
  1379  comm A.txt B.txt -2 -3 >gene_to_be_checked_list.txt
+
+for i in `cat gene_to_be_checked_list.txt`; do cat gene.maker.gff| grep $i; done >gene_to_be_checked_list.gff
+c ../Bfra_R1V1.fa.all.gff| grep ^tig >Bfra_R1V1.fa.all_no_seq.gff
+bedtools intersect -wa -a Bfra_R1V1.fa.all_no_seq.gff -b gene_to_be_checked_list.gff |uniq >gene_for_jbrowse.gff
+
+https://jbrowse.org/blog/2020/02/04/jbrowse-1-16-8.html
