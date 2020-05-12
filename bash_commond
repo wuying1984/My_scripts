@@ -57,3 +57,10 @@ perl get_all_intron_bed.pl Bfra_R1V1.fa.all.gtf >part.intron.bed
  ########CDS to protein##################################
  ~/miniconda3/bin/python convert_cds_to_pep_for_fasta.py Bfra_CDS.fa
  
+ cp ${i/_trinity/}_6th.gff ~/mnt/jbrowse/;cd ../;
+ maker2jbrowse UCSC1.final.gff -o UCSC1
+ 
+ https://usegalaxy.org/
+ search jbrowse
+ 
+ http://weatherby.genetics.utah.edu/MAKER/wiki/index.php/MAKER_Tutorial_for_GMOD_Online_Training_2014
