@@ -73,9 +73,24 @@ perl get_all_intron_bed.pl Bfra_R1V1.fa.all.gtf >part.intron.bed
  1377  comm A.txt B.txt -2 -3| wc -l
  1378  wc -l *list.txt
  1379  comm A.txt B.txt -2 -3 >gene_to_be_checked_list.txt
+ c gene_list_for_checkup_intron.tab >>gene_to_be_checked_list.txt
+ 
+ for i in `cat gene_to_be_checked_list.txt`; do cat gene.maker.gff| grep $i; done >gene_to_be_checked_list.gff
+c gene_to_be_checked_list.gff
+c ../Bfra_R1V1.fa.all.gff| grep ^tig >Bfra_R1V1.fa.all_no_seq.gff
+bedtools intersect -wa -a Bfra_R1V1.fa.all_no_seq.gff -b gene_to_be_checked_list.gff |uniq >gene_for_jbrowse.gff
+c gene_for_jbrowse.gff| awk '$2~/maker/' >gene_for_jbrowse_gene.gff
+ c gene_for_jbrowse.gff| awk '$2~/protein2genome/' >gene_for_jbrowse_protein2genome.gff
+c gene_for_jbrowse.gff| awk '$2~/repeatmasker/' >gene_for_jbrowse_repeatmasker.gff
+ c gene_for_jbrowse.gff | awk '$2~/cdna2genome/||$2~/est2genome/' >gene_for_jbrowse_cna.gff
+ c gene_for_jbrowse.gff | awk '$2~/augustus_masked/||$2~/snap_masked/ ||$2~/genemark/' >gene_for_jbrowse_software.gff
+ 
+ 
 
 for i in `cat gene_to_be_checked_list.txt`; do cat gene.maker.gff| grep $i; done >gene_to_be_checked_list.gff
 c ../Bfra_R1V1.fa.all.gff| grep ^tig >Bfra_R1V1.fa.all_no_seq.gff
 bedtools intersect -wa -a Bfra_R1V1.fa.all_no_seq.gff -b gene_to_be_checked_list.gff |uniq >gene_for_jbrowse.gff
 
 https://jbrowse.org/blog/2020/02/04/jbrowse-1-16-8.html
+
+for i in `head test1.txt`; do cat gene.maker.gff| grep $i| awk '{print "'$i'""\t"$1"\t"$4".."$5}';done
