@@ -53,7 +53,7 @@ perl get_all_intron_bed.pl Bfra_R1V1.fa.all.gtf >part.intron.bed
 
 
 #########gtf to CDS fasta################################
- perl get_all_CDS_bed.pl Bfra_R1V1.fa.all.gtf |  bedtools getfasta -s -name -fi ~/Xiaolab/Botrytis/Maker/Bfra_R1V1.fa -bed - -fo Bfra_individual_CDS.fa
+ perl ../../get_all_CDS_bed.pl Bfra_R1V1.fa.all.gtf |  bedtools getfasta -s -name -fi ~/Xiaolab/Botrytis/Maker/Bfra_R1V1.fa -bed - -fo Bfra_individual_CDS.fa
  perl ../../connect_individual_CDS.pl Bfra_add_individual_CDS.fa Bfra_add_CDS.fa
  ########CDS to protein##################################
  ~/miniconda3/bin/python convert_cds_to_pep_for_fasta.py Bfra_CDS.fa
@@ -101,5 +101,6 @@ https://jbrowse.org/blog/2020/02/04/jbrowse-1-16-8.html
 
 for i in `head test1.txt`; do cat gene.maker.gff| grep $i| awk '{print "'$i'""\t"$1"\t"$4".."$5}';done
 
-
-
+~/miniconda3/bin/python replace_add_rm.py >out/Bfra_R1V1.fa.all_no_seq.modified.gff
+~/miniconda3/bin/python sort_gff.py >out/Bfra_R1V1.fa.all_no_seq.modified.sorted.gff
+intersectBed -wo -a gene.gff -b gene.gff | awk '$9!=$18' | awk '{print $9}' | awk -F\; '{print $1}' | sed 's@ID=@@' | us >genes_with_intersect.txt
