@@ -53,9 +53,15 @@ perl get_all_intron_bed.pl Bfra_R1V1.fa.all.gtf >part.intron.bed
 
 
 #########gtf to CDS fasta################################
- perl get_all_CDS_bed.pl Bfra_R1V1.fa.all.gtf |  bedtools getfasta -s -name -fi ../../../../Bfra_R1V1.fa -bed - -fo Bfra_individual_CDS.fa
+ perl get_all_CDS_bed.pl Bfra_R1V1.fa.all.gtf |  bedtools getfasta -s -name -fi ~/Xiaolab/Botrytis/Maker/Bfra_R1V1.fa -bed - -fo Bfra_individual_CDS.fa
+ perl ../../connect_individual_CDS.pl Bfra_add_individual_CDS.fa Bfra_add_CDS.fa
  ########CDS to protein##################################
  ~/miniconda3/bin/python convert_cds_to_pep_for_fasta.py Bfra_CDS.fa
+ ########get how many * in the sequence#################
+ for i in `cat ../../Bfra_CDS.pep.fa | grep -v ">" | grep "*$"` ; do echo -ne $i"\t"; echo $i| tr -dc "*"|length;done| awk '$2=="2"'
+ 
+ #########check middle *3##########################
+ for i in `cat Bfra_add_CDS.pep.fa | grep -v ">" | grep "*$"` ; do echo -ne $i"\t"; echo $i| tr -dc "*"|length;done| awk '$2=="2"'
  
  cp ${i/_trinity/}_6th.gff ~/mnt/jbrowse/;cd ../;
  maker2jbrowse UCSC1.final.gff -o UCSC1
@@ -94,3 +100,6 @@ bedtools intersect -wa -a Bfra_R1V1.fa.all_no_seq.gff -b gene_to_be_checked_list
 https://jbrowse.org/blog/2020/02/04/jbrowse-1-16-8.html
 
 for i in `head test1.txt`; do cat gene.maker.gff| grep $i| awk '{print "'$i'""\t"$1"\t"$4".."$5}';done
+
+
+
