@@ -101,8 +101,8 @@ https://jbrowse.org/blog/2020/02/04/jbrowse-1-16-8.html
 
 for i in `head test1.txt`; do cat gene.maker.gff| grep $i| awk '{print "'$i'""\t"$1"\t"$4".."$5}';done
 
-~/miniconda3/bin/python replace_add_rm.py >out/Bfra_R1V1.fa.all_no_seq.modified.gff
-~/miniconda3/bin/python sort_gff.py >out/Bfra_R1V1.fa.all_no_seq.modified.sorted.gff
+~/miniconda3/bin/python replace_add_rm.py >output/Bfra_R1V1.fa.all_no_seq.modified.gff
+~/miniconda3/bin/python sort_gff.py >output/Bfra_R1V1.fa.all_no_seq.modified.sorted.gff
 #############get overlapped gene##########################
 c  Bfra_R1V1.fa.all_no_seq.modified.sorted.gff| awk '$3~/gene/'>gene.gff
 intersectBed -wo -a gene.gff -b gene.gff | awk '$9!=$18' | awk '{print $9}' | awk -F\; '{print $1}' | sed 's@ID=@@' | us >genes_with_intersect.txt
@@ -117,3 +117,10 @@ c overlap_gene_for_jbrowse.gff| awk '$2~/repeatmasker/' >overlap_gene_for_jbrows
  c overlap_gene_for_jbrowse.gff | awk '$2~/cdna2genome/||$2~/est2genome/' >overlap_gene_for_jbrowse_cna.gff
  for i in `cat genes_with_intersect.txt`; do cat overlap_gene_for_jbrowse_gene.gff |grep $i| awk '$3~/gene/{print "'$i'""\t"$1":"$4".."$5}';done >overlap_gene_for_checkup.txt
  c overlap_gene_for_jbrowse.gff | awk '$2~/augustus_masked/||$2~/snap_masked/ ||$2~/genemark/' >overlap_gene_for_jbrowse_software.gff
+
+########contig assembly stat
+~/miniconda3/bin/assembly-stats ../Bfra_R1V1.fa
+#########scaffolds contig assembly stat
+seqtk cutN 1 ../Bfra_R1V1.fa >contig.fasta
+
+
