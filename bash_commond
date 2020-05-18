@@ -103,4 +103,17 @@ for i in `head test1.txt`; do cat gene.maker.gff| grep $i| awk '{print "'$i'""\t
 
 ~/miniconda3/bin/python replace_add_rm.py >out/Bfra_R1V1.fa.all_no_seq.modified.gff
 ~/miniconda3/bin/python sort_gff.py >out/Bfra_R1V1.fa.all_no_seq.modified.sorted.gff
+#############get overlapped gene##########################
+c  Bfra_R1V1.fa.all_no_seq.modified.sorted.gff| awk '$3~/gene/'>gene.gff
 intersectBed -wo -a gene.gff -b gene.gff | awk '$9!=$18' | awk '{print $9}' | awk -F\; '{print $1}' | sed 's@ID=@@' | us >genes_with_intersect.txt
+intersectBed -wo -a gene.gff -b gene.gff | awk '$9!=$18' | awk '{print $9}' | awk -F\; '{print $1}' | sed 's@ID=@@' | us
+
+for i in `cat genes_with_intersect.txt`;do cat gene.gff| grep $i; done >overlap_gene.gff
+bedtools intersect -wa -a ../../Bfra_R1V1.fa.all_no_seq.gff -b overlap_gene.gff |uniq >overlap_gene_for_jbrowse.gff
+bedtools intersect -wa -a ../Bfra_R1V1.fa.all_no_seq.modified.sorted.gff -b overlap_gene.gff |uniq| awk '$2~/maker/' >overlap_gene_for_jbrowse_gene.gff
+c overlap_gene_for_jbrowse.gff| awk '$2~/maker/' >overlap_gene_for_jbrowse_gene.gff
+ c overlap_gene_for_jbrowse.gff| awk '$2~/protein2genome/' >overlap_gene_for_jbrowse_protein2genome.gff
+c overlap_gene_for_jbrowse.gff| awk '$2~/repeatmasker/' >overlap_gene_for_jbrowse_repeatmasker.gff
+ c overlap_gene_for_jbrowse.gff | awk '$2~/cdna2genome/||$2~/est2genome/' >overlap_gene_for_jbrowse_cna.gff
+ for i in `cat genes_with_intersect.txt`; do cat overlap_gene_for_jbrowse_gene.gff |grep $i| awk '$3~/gene/{print "'$i'""\t"$1":"$4".."$5}';done >overlap_gene_for_checkup.txt
+ c overlap_gene_for_jbrowse.gff | awk '$2~/augustus_masked/||$2~/snap_masked/ ||$2~/genemark/' >overlap_gene_for_jbrowse_software.gff
