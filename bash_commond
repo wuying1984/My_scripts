@@ -8,8 +8,16 @@ makeblastdb -in protein.fa -input_type fasta -dbtype prot -titleb  PM8_NEW -out 
 
 
 # split gff non-seq part
-cat Bfra_R1V1.fa.all.gff | grep ^tig | awk '{print $_>"part."$2".gff"}'
-###############################################
+cat Bfra_R1V1.fa.all.gff | grep ^tig | grep -v "match_part" |awk '{print $_>"part."$2".gff"}'
+mv part...gff part.genome.gff
+
+c part.est2genome.gff| awk '{print $1"\t"$4"\t"$5}' | sort -k1,1 -k2,2n -k3,3n >est2genome.bed
+bedtools merge -i est2genome.bed | awk '{print $1"\test2genome\texpressed_sequence_match\t"$2"\t"$3"\t111\t+\t.\t"$1}' >part.est2genome.gff
+
+c part.protein2genome.gff|awk '{print $1"\t"$4"\t"$5}' | sort -k1,1 -k2,2n -k3,3n >protein2genome.bed
+bedtools merge -i protein2genome.bed | awk '{print $1"\tprotein2genome\tprotein_match\t"$2"\t"$3"\t111\t+\t.\t"$1}' >part.protein2genome.gff
+
+#############################################
 blastx      909952
 protein2genome      846110
 tblastx      343956
@@ -26,7 +34,108 @@ repeatrunner      46
 #################################################
 
 cat Bfra_R1V1.fa.all.gff | awk '$2=="maker"' | awk '$3=="gene"' | grep ^tig | awk '{print $_>"gene."$2".gff"}'
+cat Bfra_R1V1.fa.all.gff | awk '$2=="maker"' | awk '$3=="CDS"' | grep ^tig | awk '{print $_>"CDS."$2".gff"}'
 
-for i in `echo repeatmasker est2genome protein2genome augustus `;
+for i in `echo repeatmasker est2genome protein2genome augustus_masked`;
 	bedtools intersect -wo -a gene.maker.gff -b part.$i.gff | awk '{print $19/($5-$4+1)"\t"$_}' >intersect.$i.txt
 done
+for i in `echo repeatmasker est2genome protein2genome augustus_masked`;do bedtools intersect -wo -a CDS.maker.gff -b part.$i.gff | awk '{print $19/($5-$4+1)"\t"$_}' >intersect.$i.txt;done
+##########第一列是overlap的百分比
+perl get_geneID_for_checkup.pl
+##
+
+#########gff to gtf#######################################
+gffread ../Bfra_R1V1.fa.all.gff -T -o Bfra_R1V1.fa.all.gtf
+##########################################################
+##########get intron bet##################################
+perl get_all_intron_bed.pl annotation/gencode.v28.annotation.gtf | bedtools getfasta -s -name -fi annotation/GRCh38.p12.genome.fa -bed - -fo annotation/gencode.v28.intron.fa
+perl get_all_intron_bed.pl Bfra_R1V1.fa.all.gtf >part.intron.bed
+
+
+#########gtf to CDS fasta################################
+ perl ../../get_all_CDS_bed.pl Bfra_R1V1.fa.all.gtf |  bedtools getfasta -s -name -fi ~/Xiaolab/Botrytis/Maker/Bfra_R1V1.fa -bed - -fo Bfra_individual_CDS.fa
+ perl ../../connect_individual_CDS.pl Bfra_add_individual_CDS.fa Bfra_add_CDS.fa
+ ########CDS to protein##################################
+ ~/miniconda3/bin/python convert_cds_to_pep_for_fasta.py Bfra_CDS.fa
+ ########get how many * in the sequence#################
+ for i in `cat ../../Bfra_CDS.pep.fa | grep -v ">" | grep "*$"` ; do echo -ne $i"\t"; echo $i| tr -dc "*"|length;done| awk '$2=="2"'
+ 
+ #########check middle *3##########################
+ for i in `cat Bfra_add_CDS.pep.fa | grep -v ">" | grep "*$"` ; do echo -ne $i"\t"; echo $i| tr -dc "*"|length;done| awk '$2=="2"'
+ 
+ cp ${i/_trinity/}_6th.gff ~/mnt/jbrowse/;cd ../;
+ maker2jbrowse UCSC1.final.gff -o UCSC1
+ 
+ https://usegalaxy.org/
+ search jbrowse
+ 
+ http://weatherby.genetics.utah.edu/MAKER/wiki/index.php/MAKER_Tutorial_for_GMOD_Online_Training_2014
+ http://gmod.org/wiki/MAKER_Tutorial_2013
+
+ c Bfra_CDS.pep.fa| grep ">"  |sed "s#>##" >all_gene_list.txt
+ c all_gene_list.txt | sort >A.txt
+ 1375  c qualified_gene_list.txt | sort >B.txt
+ 1376  comm A.txt B.txt -2 -3
+ 1377  comm A.txt B.txt -2 -3| wc -l
+ 1378  wc -l *list.txt
+ 1379  comm A.txt B.txt -2 -3 >gene_to_be_checked_list.txt
+ c gene_list_for_checkup_intron.tab >>gene_to_be_checked_list.txt
+ 
+ for i in `cat gene_to_be_checked_list.txt`; do cat gene.maker.gff| grep $i; done >gene_to_be_checked_list.gff
+c gene_to_be_checked_list.gff
+c ../Bfra_R1V1.fa.all.gff| grep ^tig >Bfra_R1V1.fa.all_no_seq.gff
+bedtools intersect -wa -a Bfra_R1V1.fa.all_no_seq.gff -b gene_to_be_checked_list.gff |uniq >gene_for_jbrowse.gff
+c gene_for_jbrowse.gff| awk '$2~/maker/' >gene_for_jbrowse_gene.gff
+ c gene_for_jbrowse.gff| awk '$2~/protein2genome/' >gene_for_jbrowse_protein2genome.gff
+c gene_for_jbrowse.gff| awk '$2~/repeatmasker/' >gene_for_jbrowse_repeatmasker.gff
+ c gene_for_jbrowse.gff | awk '$2~/cdna2genome/||$2~/est2genome/' >gene_for_jbrowse_cna.gff
+ c gene_for_jbrowse.gff | awk '$2~/augustus_masked/||$2~/snap_masked/ ||$2~/genemark/' >gene_for_jbrowse_software.gff
+ 
+ 
+
+for i in `cat gene_to_be_checked_list.txt`; do cat gene.maker.gff| grep $i; done >gene_to_be_checked_list.gff
+c ../Bfra_R1V1.fa.all.gff| grep ^tig >Bfra_R1V1.fa.all_no_seq.gff
+bedtools intersect -wa -a Bfra_R1V1.fa.all_no_seq.gff -b gene_to_be_checked_list.gff |uniq >gene_for_jbrowse.gff
+
+https://jbrowse.org/blog/2020/02/04/jbrowse-1-16-8.html
+
+for i in `head test1.txt`; do cat gene.maker.gff| grep $i| awk '{print "'$i'""\t"$1"\t"$4".."$5}';done
+
+~/miniconda3/bin/python replace_add_rm.py >output/Bfra_R1V1.fa.all_no_seq.modified.gff
+~/miniconda3/bin/python sort_gff.py >output/Bfra_R1V1.fa.all_no_seq.modified.sorted.gff
+#############get overlapped gene##########################
+c  Bfra_R1V1.fa.all_no_seq.modified.sorted.gff| awk '$3~/gene/'>gene.gff
+intersectBed -wo -a gene.gff -b gene.gff | awk '$9!=$18' | awk '{print $9}' | awk -F\; '{print $1}' | sed 's@ID=@@' | us >genes_with_intersect.txt
+intersectBed -wo -a gene.gff -b gene.gff | awk '$9!=$18' | awk '{print $9}' | awk -F\; '{print $1}' | sed 's@ID=@@' | us
+
+for i in `cat genes_with_intersect.txt`;do cat gene.gff| grep $i; done >overlap_gene.gff
+bedtools intersect -wa -a ../../Bfra_R1V1.fa.all_no_seq.gff -b overlap_gene.gff |uniq >overlap_gene_for_jbrowse.gff
+bedtools intersect -wa -a ../Bfra_R1V1.fa.all_no_seq.modified.sorted.gff -b overlap_gene.gff |uniq| awk '$2~/maker/' >overlap_gene_for_jbrowse_gene.gff
+c overlap_gene_for_jbrowse.gff| awk '$2~/maker/' >overlap_gene_for_jbrowse_gene.gff
+ c overlap_gene_for_jbrowse.gff| awk '$2~/protein2genome/' >overlap_gene_for_jbrowse_protein2genome.gff
+c overlap_gene_for_jbrowse.gff| awk '$2~/repeatmasker/' >overlap_gene_for_jbrowse_repeatmasker.gff
+ c overlap_gene_for_jbrowse.gff | awk '$2~/cdna2genome/||$2~/est2genome/' >overlap_gene_for_jbrowse_cna.gff
+ for i in `cat genes_with_intersect.txt`; do cat overlap_gene_for_jbrowse_gene.gff |grep $i| awk '$3~/gene/{print "'$i'""\t"$1":"$4".."$5}';done >overlap_gene_for_checkup.txt
+ c overlap_gene_for_jbrowse.gff | awk '$2~/augustus_masked/||$2~/snap_masked/ ||$2~/genemark/' >overlap_gene_for_jbrowse_software.gff
+
+########contig assembly stat
+~/miniconda3/bin/assembly-stats ../Bfra_R1V1.fa
+#########scaffolds contig assembly stat
+seqtk cutN 1 ../Bfra_R1V1.fa >contig.fasta
+
+
+http://tiramisutes.github.io/2016/08/30/NCBI-submission.html
+
+
+#add header to fasta
+c Bfra_R1V1.fa| sed 'n;d' >A
+c Bfra_R1V1.fa| sed -n 'n;p' >B
+c A | wc
+c B | wc
+cat A | sed "s#tig#Bfra#"| awk '{print $1" [organism=Botrytis fragariae] [isolate=BVB16]"}' >C
+paste C B | tr '\t' '\n' >D
+./linux64.tbl2asn -p Bfra -t template_Bfra_2020.sbt -M n -Z discrepency.report.txt  
+
+
+-a r50k -l
+
