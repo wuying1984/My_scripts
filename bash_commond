@@ -124,3 +124,18 @@ c overlap_gene_for_jbrowse.gff| awk '$2~/repeatmasker/' >overlap_gene_for_jbrows
 seqtk cutN 1 ../Bfra_R1V1.fa >contig.fasta
 
 
+http://tiramisutes.github.io/2016/08/30/NCBI-submission.html
+
+
+#add header to fasta
+c Bfra_R1V1.fa| sed 'n;d' >A
+c Bfra_R1V1.fa| sed -n 'n;p' >B
+c A | wc
+c B | wc
+cat A | sed "s#tig#Bfra#"| awk '{print $1" [organism=Botrytis fragariae] [isolate=BVB16]"}' >C
+paste C B | tr '\t' '\n' >D
+./linux64.tbl2asn -p Bfra -t template_Bfra_2020.sbt -M n -Z discrepency.report.txt  
+
+
+-a r50k -l
+
