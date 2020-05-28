@@ -1,7 +1,7 @@
 ### data folder containing some files used as input for the scripts.
 
 ### 1. combineTABwith.pl 
-####### conbine two files based on the specified column
+#### conbine two files based on the specified column
 ```
 combineTABwith.pl A 1 B 1
 #1 is the column to be combined
