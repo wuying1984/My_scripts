@@ -40,6 +40,9 @@ perl get_all_CDS_bed.pl input.gtf |  bedtools getfasta -s -name -fi genome.fa -b
  
 ### 6. get_all_intron_bed.pl
 #### similar to get_all_CDS_bed.pl, but get the intron bed or intron fasta
+```
+perl get_all_intron_bed.pl Bfra_R1V1.fa.all.gtf >part.intron.bed
+```
  
 ### 7. get_geneID_for_checkup.pl
 #### get the gene ID that overlap with repeatmask (may need a bit change to exclude simple repeat)
