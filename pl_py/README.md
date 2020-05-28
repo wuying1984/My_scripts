@@ -27,10 +27,6 @@ combineTABwith.pl A 1 B 1
 # outfile is CDS.pep.fa
 ```
 
-`
- ~/miniconda3/bin/python convert_cds_to_pep_for_fasta.py CDS.fa
-`
-
 ### 4.get_all_CDS_bed.pl
 ```
 ## first convert gff to gtf
@@ -39,9 +35,21 @@ gffread ../Bfra_R1V1.fa.all.gff -T -o Bfra_R1V1.fa.all.gtf
 perl get_all_CDS_bed.pl input.gtf |  bedtools getfasta -s -name -fi genome.fa -bed - -fo individual_CDS.fa
 ```
  
- ### 5. 2333 May 11 14:57 get_all_exon_bed.pl
--rw-r--r-- 1 ywu domain users  3018 May 12 08:13 get_all_intron_bed.pl
--rw-r--r-- 1 ywu domain users  4841 May 12 08:13 get_geneID_for_checkup.pl
+### 5. get_all_exon_bed.pl
+#### similar to get_all_CDS_bed.pl, but get the exon bed or exon fasta
+ 
+### 6. get_all_intron_bed.pl
+#### similar to get_all_CDS_bed.pl, but get the intron bed or intron fasta
+ 
+### 7. get_geneID_for_checkup.pl
+#### get the gene ID that overlap with repeatmask (may need a bit change to exclude simple repeat)
+####                                   est2genome
+####                                   protein2genome
+####                                   AUGUSTUS,GeneMark,SNAP (may need a bit change to output how many AUGUSTUS id overlap with the ID
+                                       
+ ```
+ perl get_geneID_for_checkup.pl
+ ```
 -rw-r--r-- 1 ywu domain users   725 May 27 18:07 get_partial.pl
 -rw-r--r-- 1 ywu domain users  1838 May 12 08:13 get_seq_need.pl
 -rwxr-xr-x 1 ywu domain users 17886 May 27 18:06 get_tbl_new_Bfra.pl
