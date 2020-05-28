@@ -14,11 +14,36 @@ combineTABwith.pl A 1 B 1
 ```
 
 ### 2. connect_individual_CDS.pl
+#### conect individual CDS from one gene into whole CDS
 ```
+# use get_all_CDS_bed.pl to get individual CDS file
  perl connect_individual_CDS.pl individual_CDS.fa Whole_CDS.fa
 ```
--rw-r--r-- 1 ywu domain users   893 May 12 08:13 convert_cds_to_pep_for_fasta.py
--rw-r--r-- 1 ywu domain users  2331 May 12 08:13 get_all_CDS_bed.pl
+
+### 3. convert_cds_to_pep_for_fasta.py
+#### convert CDS sequences into peptides
+```
+ ~/miniconda3/bin/python convert_cds_to_pep_for_fasta.py CDS.fa
+# outfile is CDS.pep.fa
+```
+
+### 4.get_all_CDS_bed.pl
+```
+## first convert gff to gtf
+gffread ../Bfra_R1V1.fa.all.gff -T -o Bfra_R1V1.fa.all.gtf
+## get individual CDS sequence
+perl get_all_CDS_bed.pl input.gtf |  bedtools getfasta -s -name -fi genome.fa -bed - -fo individual_CDS.fa
+
+
+########gtf to CDS fasta################################
+ perl ../../get_all_CDS_bed.pl Bfra_R1V1.fa.all.gtf |  bedtools getfasta -s -name -fi ~/Xiaolab/Botrytis/Maker/Bfra_R1V1.fa -bed - -fo Bfra_individual_CDS.fa
+ perl ../../connect_individual_CDS.pl Bfra_add_individual_CDS.fa Bfra_add_CDS.fa
+ ########CDS to protein##################################
+ ~/miniconda3/bin/python convert_cds_to_pep_for_fasta.py Bfra_CDS.fa
+ 
+ 
+ 
+
 -rw-r--r-- 1 ywu domain users  2333 May 11 14:57 get_all_exon_bed.pl
 -rw-r--r-- 1 ywu domain users  3018 May 12 08:13 get_all_intron_bed.pl
 -rw-r--r-- 1 ywu domain users  4841 May 12 08:13 get_geneID_for_checkup.pl
