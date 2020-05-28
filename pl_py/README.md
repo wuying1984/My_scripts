@@ -50,9 +50,37 @@ perl get_all_CDS_bed.pl input.gtf |  bedtools getfasta -s -name -fi genome.fa -b
  ```
  perl get_geneID_for_checkup.pl
  ```
--rw-r--r-- 1 ywu domain users   725 May 27 18:07 get_partial.pl
--rw-r--r-- 1 ywu domain users  1838 May 12 08:13 get_seq_need.pl
--rwxr-xr-x 1 ywu domain users 17886 May 27 18:06 get_tbl_new_Bfra.pl
--rwxr-xr-x 1 ywu domain users 16632 May 27 18:07 get_tbl_new.pl
--rw-r--r-- 1 ywu domain users  5412 May 27 18:16 replace_add_rm.py
--rw-r--r-- 1 ywu domain users  2024 May 27 18:16 sort_gff.py
+
+### 8. get_partial.pl
+#### check if a gene starts with M and ends with *
+#### input a fasta file, change the name in the script
+```
+perl get_partial.pl
+```
+
+### 9.get_seq_need.pl
+#### input cds file, pep file and the id need, output the seq needed
+
+### 10.get_tbl_new_Bfra.pl & 11. get_tbl_new.pl
+#### convert gff file into tbl file
+#### change the input file and check the script before use it
+
+### 12. replace_add_rm.py
+#### replace the changed gff for specific gene
+#### add gff for specific genes
+#### remove gff for specific genes
+#### file format is in `data folder`
+```
+# replace_dct = get_add("data/bfra_replace.txt")
+# add_dct = get_add("data/bfra_add.txt")
+# rm_dct = get_rm("data/bfra_rm.txt")
+g1 = GFF("data/Bfra_R1V1.fa.all_no_seq.maker.gff")
+g2 = GFF("data/Bfra_R1V1.fa.all_no_seq.other.gff")
+~/miniconda3/bin/python replace_add_rm.py >output/Bfra_R1V1.fa.all_no_seq.modified.gff
+```
+
+### 13.sort_gff.py
+#### sort gff file after replace_add_rm
+```
+~/miniconda3/bin/python sort_gff.py >output/Bfra_R1V1.fa.all_no_seq.modified.sorted.gff
+```
