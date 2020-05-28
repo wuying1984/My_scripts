@@ -27,6 +27,10 @@ combineTABwith.pl A 1 B 1
 # outfile is CDS.pep.fa
 ```
 
+`
+ ~/miniconda3/bin/python convert_cds_to_pep_for_fasta.py CDS.fa
+`
+
 ### 4.get_all_CDS_bed.pl
 ```
 ## first convert gff to gtf
