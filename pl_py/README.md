@@ -33,18 +33,9 @@ combineTABwith.pl A 1 B 1
 gffread ../Bfra_R1V1.fa.all.gff -T -o Bfra_R1V1.fa.all.gtf
 ## get individual CDS sequence
 perl get_all_CDS_bed.pl input.gtf |  bedtools getfasta -s -name -fi genome.fa -bed - -fo individual_CDS.fa
-
-
-########gtf to CDS fasta################################
- perl ../../get_all_CDS_bed.pl Bfra_R1V1.fa.all.gtf |  bedtools getfasta -s -name -fi ~/Xiaolab/Botrytis/Maker/Bfra_R1V1.fa -bed - -fo Bfra_individual_CDS.fa
- perl ../../connect_individual_CDS.pl Bfra_add_individual_CDS.fa Bfra_add_CDS.fa
- ########CDS to protein##################################
- ~/miniconda3/bin/python convert_cds_to_pep_for_fasta.py Bfra_CDS.fa
+```
  
- 
- 
-
--rw-r--r-- 1 ywu domain users  2333 May 11 14:57 get_all_exon_bed.pl
+ ### 5. 2333 May 11 14:57 get_all_exon_bed.pl
 -rw-r--r-- 1 ywu domain users  3018 May 12 08:13 get_all_intron_bed.pl
 -rw-r--r-- 1 ywu domain users  4841 May 12 08:13 get_geneID_for_checkup.pl
 -rw-r--r-- 1 ywu domain users   725 May 27 18:07 get_partial.pl
