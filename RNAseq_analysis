@@ -1,2 +1,9 @@
 ##### Convert gff to gtf #####
 gffread my.gff3 -T -o my.gtf
+
+
+#####build index##############
+hisat2-build TAIR10_bowtie2.fa TAIR10_hisat 1>hisat2-build.log 2>&1
+
+#####run hisat2###############
+hisat2 --new-summary -p 6 -x genome/TAIR10_bowtie2 -1 eps_U4_0_2/eps_U4_0_2_1.fq.gz  -2 eps_U4_0_2/eps_U4_0_2_2.fq.gz  -S eps_U4_0_2.sam --rna-strandness R 1>eps_U4_0_2.log  2>&1
