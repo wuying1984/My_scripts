@@ -7,3 +7,12 @@ hisat2-build TAIR10_bowtie2.fa TAIR10_hisat 1>hisat2-build.log 2>&1
 
 #####run hisat2###############
 hisat2 --new-summary -p 6 -x genome/TAIR10_bowtie2 -1 eps_U4_0_2/eps_U4_0_2_1.fq.gz  -2 eps_U4_0_2/eps_U4_0_2_2.fq.gz  -S eps_U4_0_2.sam --rna-strandness R 1>eps_U4_0_2.log  2>&1
+#!/bin/bash
+#PBS -l ncpus=16
+#PBS -l mem=32G
+cd /scratch/Xiao_Group/RNAseq
+for i in eps_U4_0*; do echo $i; cd $i; hisat2 --new-summary -p 6 -x ../genome/TAIR10_bowtie2 -1 ${i}_1.fq.gz -2 ${i}_2.fq.gz -S ${i}.sam --rna-strandness R 1>../${i}.log 2>&1; cd ../; done
+##### converting sam to bam for each file
+for i in eps_U4_0*; do echo "convert sam to bam now in $i";cd $i; samtools sort -o ${i}.bam ${i}.sam; cd ../; done
+for i in eps_U4_0*; do echo "remove sam file in $i";cd $i; rm ${i}.sam; cd ../; done
+#####
