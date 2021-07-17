@@ -15,4 +15,15 @@ for i in eps_U4_0*; do echo $i; cd $i; hisat2 --new-summary -p 6 -x ../genome/TA
 ##### converting sam to bam for each file
 for i in eps_U4_0*; do echo "convert sam to bam now in $i";cd $i; samtools sort -o ${i}.bam ${i}.sam; cd ../; done
 for i in eps_U4_0*; do echo "remove sam file in $i";cd $i; rm ${i}.sam; cd ../; done
-#####
+#####indes bam file
+for i in eps_U4_0*; do echo "index bam file in $i";cd $i; samtools index ${i}.bam; cd ../; done
+
+#####HTseq counting reads######
+samtools view -h r.short_frag/accepted_hits.u.bam | htseq-count --stranded=yes - /projects/b1080/hy/rnasefootprint/rnasefootprint/human/annotation/ucsc.golden.with_gencode_chrM.CDSexon.uORF_and_overlaping_uORF_region_removed.gtf >r.short_frag/accepted_hits.u.forward.ucscCDS.htseq
+
+code:
+
+https://github.com/haiwangyang/DE/blob/master/Differential.expression.analyses.Rmd
+
+effect:
+http://htmlpreview.github.io/?https://github.com/haiwangyang/DE/blob/master/html/Differential.expression.analyses.html
