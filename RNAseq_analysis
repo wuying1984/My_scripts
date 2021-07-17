@@ -18,6 +18,29 @@ for i in eps_U4_0*; do echo "remove sam file in $i";cd $i; rm ${i}.sam; cd ../; 
 #####indes bam file
 for i in eps_U4_0*; do echo "index bam file in $i";cd $i; samtools index ${i}.bam; cd ../; done
 
+#####featureCounts from R package "Rsubread"###########
+https://rdrr.io/bioc/Rsubread/man/featureCounts.html
+##install R packages###################################
+>if (!requireNamespace("BiocManager", quietly=TRUE)) install.packages("BiocManager")
+> BiocManager::install("Rsubread")
+> BiocManager::install("limma")
+> BiocManager::install("edgeR")
+> library("Rsubread")
+> library("limma")
+> library("edgeR")
+>rc=featureCounts(files="eps_U4_0_2/eps_U4_0_2.bam",annot.ext="genome/TAIR10_bowtie2.gtf",isGTFAnnotationFile=TRUE,isPairedEnd=TRUE,countMultiMappingReads=TRUE, fraction=TRUE)
+#annot.ext specify the gtf annotation file
+#isGTFAnnotationFile need to be set to TRUE, default is FALSE
+#GTF.attrType: default is gene_id
+#GTF.featureType: default is exon, could be set to CDS
+#other pepole: fc <- featureCounts(file="T_reesei_F24-2_GTGGCC_L008_R1_001.cleanreads.fastq.gz_tophat2/F24h-2_accepted_hits.bam",annot.ext="TrireRUTC30_1_GeneCatalog_genes_20110526.fix2.gtf",isGTFAnnotationFile = TRUE,GTF.featureType = "CDS",GTF.attrType = "transcript_id")
+#other pepole: write.table(x=data.frame(fc$annotation[,c("GeneID","Length")],fc$counts,stringsAsFactors=FALSE),file="counts.txt",quote=FALSE,sep="\t",row.names=FALSE)
+
+The generated 'counts.txt' file is a tab-delimi
+>write.table(x=data.frame(rc$annotation[,c("GeneID","Length")],fc$counts,stringsAsFactors=FALSE),file="eps_U4_0_2-counts.txt",quote=FALSE,sep="\t",row.names=FALSE)
+
+
+
 #####HTseq counting reads######
 samtools view -h r.short_frag/accepted_hits.u.bam | htseq-count --stranded=yes - /projects/b1080/hy/rnasefootprint/rnasefootprint/human/annotation/ucsc.golden.with_gencode_chrM.CDSexon.uORF_and_overlaping_uORF_region_removed.gtf >r.short_frag/accepted_hits.u.forward.ucscCDS.htseq
 
