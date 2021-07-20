@@ -25,9 +25,31 @@ https://rdrr.io/bioc/Rsubread/man/featureCounts.html
 > BiocManager::install("Rsubread")
 > BiocManager::install("limma")
 > BiocManager::install("edgeR")
-> library("Rsubread")
-> library("limma")
-> library("edgeR")
+library("Rsubread")
+library("limma")
+library("edgeR")
+
+for (i in list.dirs(full.names=FALSE))
+{ 
+  if (grepl("U4",i)) 
+  {
+    print (i)
+    bam_name = paste(i,"bam",sep=".")
+    file_name = paste (i, bam_name, sep="/")
+    #print (file_name)
+    rc=featureCounts(files=file_name,annot.ext="genome/TAIR10_bowtie2.gtf",isGTFAnnotationFile=TRUE,isPairedEnd=TRUE,countMultiMappingReads=TRUE, fraction=TRUE)
+    #print(rc$stat)
+    output_name = paste (i, "counts.txt",sep="-")
+    write.table(x=data.frame(rc$annotation[,c("GeneID","Length")],rc$counts,stringsAsFactors=FALSE),file=output_name,quote=FALSE,sep="\t",row.names=FALSE)
+    log_name = paste (i,"featureCounts.log",sep="-")
+    #print (log_name)
+    sink(log_name)
+    print(rc$stat)
+    sink()
+  }
+
+}
+
 >rc=featureCounts(files="eps_U4_0_2/eps_U4_0_2.bam",annot.ext="genome/TAIR10_bowtie2.gtf",isGTFAnnotationFile=TRUE,isPairedEnd=TRUE,countMultiMappingReads=TRUE, fraction=TRUE)
 #annot.ext specify the gtf annotation file
 #isGTFAnnotationFile need to be set to TRUE, default is FALSE
@@ -37,7 +59,8 @@ https://rdrr.io/bioc/Rsubread/man/featureCounts.html
 #other pepole: write.table(x=data.frame(fc$annotation[,c("GeneID","Length")],fc$counts,stringsAsFactors=FALSE),file="counts.txt",quote=FALSE,sep="\t",row.names=FALSE)
 
 The generated 'counts.txt' file is a tab-delimi
->write.table(x=data.frame(rc$annotation[,c("GeneID","Length")],fc$counts,stringsAsFactors=FALSE),file="eps_U4_0_2-counts.txt",quote=FALSE,sep="\t",row.names=FALSE)
+>rc$stat
+>write.table(x=data.frame(rc$annotation[,c("GeneID","Length")],rc$counts,stringsAsFactors=FALSE),file="eps_U4_0_2-counts.txt",quote=FALSE,sep="\t",row.names=FALSE)
 
 
 
