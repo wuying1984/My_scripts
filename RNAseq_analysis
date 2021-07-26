@@ -49,7 +49,46 @@ for (i in list.dirs(full.names=FALSE))
   }
 
 }
+##########featureCount get counts rpkm tpm########
 
+for (i in list.dirs(full.names=FALSE))
+{ 
+  if (grepl("U4",i)) 
+  {
+    print (i)
+    bam_name = paste(i,"bam",sep=".")
+    file_name = paste (i, bam_name, sep="/")
+    #print (file_name)
+    fc=featureCounts(files=file_name,annot.ext="genome/TAIR10_bowtie2.gtf",isGTFAnnotationFile=TRUE,isPairedEnd=TRUE,countMultiMappingReads=TRUE, fraction=TRUE)
+    #print(rc$stat)
+    output_name = paste (i, "counts_FPKM.txt",sep="-")
+    dgeList = DGEList(counts=fc$counts, genes=fc$annotation)
+    fpkm = rpkm(dgeList, dgeList$genes$Length)
+    tpm = exp(log(fpkm) - log(sum(fpkm)) + log(1e6))
+    
+    featureCounts = cbind(rc$annotation[,c("GeneID")], rc$annotation[,c("Length")],fc$counts, fpkm, tpm)
+    colnames(featureCounts) = c('gene_id','length','counts', 'fpkm','tpm')
+    write.table(featureCounts, file=output_name,quote=FALSE,sep="\t",row.names=FALSE, col.names=TRUE,)
+    log_name = paste (i,"featureCounts_FPKM.log",sep="-")
+    #print (log_name)
+    sink(log_name)
+    print(rc$stat)
+    sink()
+    }
+}
+
+
+write.table(fCountsList$stat, outStatsFilePath, sep="\t", col.names=FALSE, row.names=FALSE, quote=FALSE)
+
+featureCounts = cbind(fCountsList$annotation[,1], fCountsList$counts, fpkm, tpm)
+colnames(featureCounts) = c('gene_id', 'counts', 'fpkm','tpm')
+write.table(featureCounts, outCountsFilePath, sep="\t", col.names=TRUE, row.names=FALSE, quote=FALSE)
+
+    
+    
+  }
+
+}
 >rc=featureCounts(files="eps_U4_0_2/eps_U4_0_2.bam",annot.ext="genome/TAIR10_bowtie2.gtf",isGTFAnnotationFile=TRUE,isPairedEnd=TRUE,countMultiMappingReads=TRUE, fraction=TRUE)
 #annot.ext specify the gtf annotation file
 #isGTFAnnotationFile need to be set to TRUE, default is FALSE
