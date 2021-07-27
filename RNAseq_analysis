@@ -85,6 +85,21 @@ colnames(featureCounts) = c('gene_id', 'counts', 'fpkm','tpm')
 write.table(featureCounts, outCountsFilePath, sep="\t", col.names=TRUE, row.names=FALSE, quote=FALSE)
 
     
+    ##########
+    gene_exp = read.table("gene_tpm.csv",header=TRUE,row.names=1,sep=",")
+    gene_count=read.table("gene_count.csv",header=TRUE, row.names=1,sep=",")
+    sample_cor=cor(gene_exp,method="pearson")
+    sample_cor = round(sample_cor,digits=1)
+    pdf("pearson_correlation_2.pdf",width=10,height=10)
+    pheatmap(sample_core_new,cluster_rows=F,cluster_cols=T)
+    dev.off()
+    pdf("cluster.pdf",width=10,height=10)
+    sample_hc=hclust(dist(t(gene_exp)))
+    plot(sample_hc)
+    dev.off()
+    
+    
+    
     
   }
 
