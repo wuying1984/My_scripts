@@ -86,19 +86,48 @@ write.table(featureCounts, outCountsFilePath, sep="\t", col.names=TRUE, row.name
 
     
     ##########
+    gene_nc = read.table("Rresult/normalized_count.tab",header=TRUE,row.names=1,sep="\t",as.is=TRUE)
     gene_exp = read.table("gene_tpm.csv",header=TRUE,row.names=1,sep=",")
     gene_count=read.table("gene_count.csv",header=TRUE, row.names=1,sep=",")
-    sample_cor=cor(gene_exp,method="pearson")
-    sample_cor = round(sample_cor,digits=1)
+    sample_cor=cor(gene_nc,method="pearson")
+    sample_cor = round(sample_cor,digits=3)
     pdf("pearson_correlation_2.pdf",width=10,height=10)
-    pheatmap(sample_core_new,cluster_rows=F,cluster_cols=T)
+    pheatmap(sample_cor,cluster_rows=F,cluster_cols=F,clustering_method="average",cellwidth = 25, cellheight = 25, fontsize = 20)
     dev.off()
     pdf("cluster.pdf",width=10,height=10)
-    sample_hc=hclust(dist(t(gene_exp)))
-    plot(sample_hc)
+    sample_hc=hclust(dist(t(gene_nc)),method="average")
+    plot(sample_hc,cex=2)
     dev.off()
     
+    sampleDist = dist(t(rldcounts))
+sampleDistMatrix = as.matrix(sampleDist)
+rownames(sampleDistMatrix) = paste(rld$sex, rld$genotype, rld$heathours, sep='-')
+colnames(sampleDistMatrix) = NULL
+colors = colorRampPalette(rev(brewer.pal(9, "Blues")))(255)
+pheatmap(sampleDistMatrix, clustering_distance_rows=sampleDist, clustering_distance_cols=sampleDist, col=colors)
     
+    dds = DESeq(dds)
+df = data.frame(dds@colData[,c('sex', 'genotype', 'heathours')])
+select = order(rowMeans(counts(dds, normalized=TRUE)), decreasing = TRUE)[1:20]
+pheatmap(rldcounts[select,], cluster_rows=FALSE, show_rownames=FALSE, cluster_cols=FALSE, annotation_col=df )
+    
+    my_sample_col <- data.frame(sample = rep(c("tumour", "normal"), c(4,2)))
+    row.names(my_sample_col) <- colnames(data_subset)
+
+[1] "eps_U4_0_2"   "eps_U4_0_3"   "eps_U4_0_4"   "eps_U4_12_1"  "eps_U4_12_2"
+ [6] "eps_U4_12_4"  "eps_U4_24_1"  "eps_U4_24_2"  "eps_U4_24_3"  "pkle_U4_0_1"
+[11] "pkle_U4_0_2"  "pkle_U4_0_3"  "pkle_U4_12_2" "pkle_U4_12_3" "pkle_U4_12_4"
+[16] "pkle_U4_24_5" "pkle_U4_24_6" "pkle_U4_24_7"
+
+
+    pdf("pearson_correlation.pdf",width=10,height=10)
+    callback = function(hc, mat){
+      sv = svd(t(mat))$v[,1]
+      dend = reorder(as.dendrogram(hc), wts = sv)
+      as.hclust(dend)
+    }
+    pheatmap(sample_cor,cluster_rows=F,clustering_callback = callback,clustering_method="average")
+    dev.off()
     
     
   }
