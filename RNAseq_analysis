@@ -1,6 +1,8 @@
 ##### Convert gff to gtf #####
 gffread my.gff3 -T -o my.gtf
 
+##### run fastq #####
+fastq -i fastq.gz -o clean_data/fastq.gz -h *.html -j *.json
 
 #####build index##############
 hisat2-build TAIR10_bowtie2.fa TAIR10_hisat 1>hisat2-build.log 2>&1
@@ -144,6 +146,9 @@ pheatmap(rldcounts[select,], cluster_rows=FALSE, show_rownames=FALSE, cluster_co
 The generated 'counts.txt' file is a tab-delimi
 >rc$stat
 >write.table(x=data.frame(rc$annotation[,c("GeneID","Length")],rc$counts,stringsAsFactors=FALSE),file="eps_U4_0_2-counts.txt",quote=FALSE,sep="\t",row.names=FALSE)
+
+#####install deseq2####
+conda install bioconductor-deseq2
 
 
 
