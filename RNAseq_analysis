@@ -150,6 +150,9 @@ The generated 'counts.txt' file is a tab-delimi
 #####install deseq2####
 conda install bioconductor-deseq2
 
+#### run 
+col_eps_pkl_RNAseq_DESEQ2_20220307 in "/Users/ywu/Xiaolab/PKL-related/all" folder
+
 
 
 #####HTseq counting reads######
