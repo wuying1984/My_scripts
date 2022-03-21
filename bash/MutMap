@@ -1,0 +1,292 @@
+* 6RF2
+#!/bin/bash
+#PBS -l ncpus=6
+#PBS -l mem=8G
+cd /scratch/Xiao_Group/Mutant_sequencing/s_6RF2
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_6RF2_CSFP190046702-1a_HMHTFDSXX_L1_1.fq >6RF2_1.sai
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_6RF2_CSFP190046702-1a_HMHTFDSXX_L1_2.fq >6RF2_2.sai
+bwa sampe  /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10 6RF2_1.sai 6RF2_2.sai s_6RF2_CSFP190046702-1a_HMHTFDSXX_L1_1.fq s_6RF2_CSFP190046702-1a_HMHTFDSXX_L1_2.fq >6RF2_bwa.sam 2>6RF2_bwa.e
+samtools view -S -b -h -F 4 6RF2_bwa.sam >6RF2_mapped.bam
+samtools sort -T 6RF2 -o 6RF2_mapped_sort.bam 6RF2_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=6RF2_mapped_sort.bam O=6RF2_mapped_sort_RG.bam RGID=6RF2 RGLB=6RF2 RGPL=illumina RGPU=6RF2 RGSM=6RF2 2>6RF2_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 6RF2_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  6RF2.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+~/program/bwa-0.7.17/bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   s_6RF2_CSFP190046702-1a_HMHTFDSXX_L1_1.fq s_6RF2_CSFP190046702-1a_HMHTFDSXX_L1_2.fq > 6RF2-pe.sam
+samtools view -S -b -h -F 4 6RF2-pe.sam >6RF2pe_mapped.bam
+samtools sort -T 6RF2_pe -o 6RF2pe_mapped_sort.bam 6RF2pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=6RF2pe_mapped_sort.bam O=6RF2pe_mapped_sort_RG.bam RGID=6RF2 RGLB=6RF2 RGPL=illumina RGPU=6RF2 RGSM=6RF2 2>6RF2pe_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 6RF2pe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  6RF2pe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+
+
+* 14RF2
+#!/bin/bash
+#PBS -l ncpus=6
+#PBS -l mem=8G
+cd /scratch/Xiao_Group/Mutant_sequencing/s_14RF2
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_14RF2_CSFP190046738-1a_HMHTFDSXX_L1_1.fq >14RF2_1.sai
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_14RF2_CSFP190046738-1a_HMHTFDSXX_L1_2.fq >14RF2_2.sai
+bwa sampe  /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10 14RF2_1.sai 14RF2_2.sai s_14RF2_CSFP190046738-1a_HMHTFDSXX_L1_1.fq s_14RF2_CSFP190046738-1a_HMHTFDSXX_L1_2.fq >14RF2_bwa.sam 2>14RF2_bwa.e
+bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   s_14RF2_CSFP190046738-1a_HMHTFDSXX_L1_1.fq s_14RF2_CSFP190046738-1a_HMHTFDSXX_L1_2.fq > 14RF2-pe.sam
+samtools view -S -b -h -F 4 14RF2_bwa.sam >14RF2_mapped.bam
+
+samtools sort -T 14RF2 -o 14RF2_mapped_sort.bam 14RF2_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=14RF2_mapped_sort.bam O=14RF2_mapped_sort_RG.bam RGID=14RF2 RGLB=14RF2 RGPL=illumina RGPU=14RF2 RGSM=14RF2 2>14RF2_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 14RF2_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  14RF2.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+~/program/bwa-0.7.17/bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   s_14RF2_CSFP190046738-1a_HMHTFDSXX_L1_1.fq s_14RF2_CSFP190046738-1a_HMHTFDSXX_L1_2.fq > 14RF2-pe.sam
+samtools view -S -b -h -F 4 14RF2-pe.sam >14RF2pe_mapped.bam
+samtools sort -T 14RF2_pe -o 14RF2pe_mapped_sort.bam 14RF2pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=14RF2pe_mapped_sort.bam O=14RF2pe_mapped_sort_RG.bam RGID=14RF2 RGLB=14RF2 RGPL=illumina RGPU=14RF2 RGSM=14RF2 2>14RF2pe_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 14RF2pe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  14RF2pe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+
+
+* 16RF2
+#!/bin/bash
+#PBS -l ncpus=6
+#PBS -l mem=8G
+cd /scratch/Xiao_Group/Mutant_sequencing/s_16RF2
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_16RF2_CSFP190139294-1a_HMHTFDSXX_L1_1.fq >16RF2_1.sai
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_16RF2_CSFP190139294-1a_HMHTFDSXX_L1_2.fq >16RF2_2.sai
+bwa sampe  /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10 16RF2_1.sai 16RF2_2.sai s_16RF2_CSFP190139294-1a_HMHTFDSXX_L1_1.fq s_16RF2_CSFP190139294-1a_HMHTFDSXX_L1_2.fq >16RF2_bwa.sam 2>16RF2_bwa.e
+bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   s_16RF2_CSFP190139294-1a_HMHTFDSXX_L1_1.fq s_16RF2_CSFP190139294-1a_HMHTFDSXX_L1_2.fq > 16RF2-pe.sam
+samtools view -S -b -h -F 4 16RF2_bwa.sam >16RF2_mapped.bam
+samtools sort -T 16RF2 -o 16RF2_mapped_sort.bam 16RF2_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=16RF2_mapped_sort.bam O=16RF2_mapped_sort_RG.bam RGID=16RF2 RGLB=16RF2 RGPL=illumina RGPU=16RF2 RGSM=16RF2 2>16RF2_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 16RF2_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  16RF2.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+~/program/bwa-0.7.17/bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   s_16RF2_CSFP190139294-1a_HMHTFDSXX_L1_1.fq s_16RF2_CSFP190139294-1a_HMHTFDSXX_L1_2.fq > 16RF2-pe.sam
+samtools view -S -b -h -F 4 16RF2-pe.sam >16RF2pe_mapped.bam
+samtools sort -T 16RF2_pe -o 16RF2pe_mapped_sort.bam 16RF2pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=16RF2pe_mapped_sort.bam O=16RF2pe_mapped_sort_RG.bam RGID=16RF2 RGLB=16RF2 RGPL=illumina RGPU=16RF2 RGSM=16RF2 2>16RF2pe_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 16RF2pe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  16RF2pe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+
+
+
+* 10RF2
+#!/bin/bash
+#PBS -l ncpus=6
+#PBS -l mem=8G
+cd /scratch/Xiao_Group/Mutant_sequencing/s_10RF2
+gunzip *.gz
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_10RF2_CSFP190046737-1a_HMHTFDSXX_L1_1.fq >10RF2_1.sai
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_10RF2_CSFP190046737-1a_HMHTFDSXX_L1_2.fq >10RF2_2.sai
+bwa sampe  /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10 10RF2_1.sai 10RF2_2.sai s_10RF2_CSFP190046737-1a_HMHTFDSXX_L1_1.fq s_10RF2_CSFP190046737-1a_HMHTFDSXX_L1_2.fq >10RF2_bwa.sam 2>10RF2_bwa.e
+bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   s_10RF2_CSFP190046737-1a_HMHTFDSXX_L1_1.fq s_10RF2_CSFP190046737-1a_HMHTFDSXX_L1_2.fq > 10RF2-pe.sam
+samtools view -S -b -h -F 4 10RF2_bwa.sam >10RF2_mapped.bam
+samtools sort -T 10RF2 -o 10RF2_mapped_sort.bam 10RF2_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=10RF2_mapped_sort.bam O=10RF2_mapped_sort_RG.bam RGID=10RF2 RGLB=10RF2 RGPL=illumina RGPU=10RF2 RGSM=10RF2 2>10RF2_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 10RF2_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  10RF2.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+~/program/bwa-0.7.17/bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   s_10RF2_CSFP190046737-1a_HMHTFDSXX_L1_1.fq s_10RF2_CSFP190046737-1a_HMHTFDSXX_L1_2.fq  > 10RF2-pe.sam
+samtools view -S -b -h -F 4 10RF2-pe.sam >10RF2pe_mapped.bam
+samtools sort -T 10RF2_pe -o 10RF2pe_mapped_sort.bam 10RF2pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=10RF2pe_mapped_sort.bam O=10RF2pe_mapped_sort_RG.bam RGID=10RF2 RGLB=10RF2 RGPL=illumina RGPU=10RF2 RGSM=10RF2 2>10RF2pe_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 10RF2pe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  10RF2pe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+
+
+
+* snap1F2
+#!/bin/bash
+#PBS -l ncpus=6
+#PBS -l mem=8G
+cd /scratch/Xiao_Group/Mutant_sequencing/snap1F2
+gunzip *.gz
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  snap1F2_CSFP190046701-1a_HMJLTDSXX_L2_1.fq >snap1F2_1.sai
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  snap1F2_CSFP190046701-1a_HMJLTDSXX_L2_2.fq >snap1F2_2.sai
+bwa sampe  /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10 snap1F2_1.sai snap1F2_2.sai snap1F2_CSFP190046701-1a_HMJLTDSXX_L2_1.fq snap1F2_CSFP190046701-1a_HMJLTDSXX_L2_2.fq >snap1F2_bwa.sam 2>snap1F2_bwa.e
+bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   snap1F2_CSFP190046701-1a_HMJLTDSXX_L2_1.fq snap1F2_CSFP190046701-1a_HMJLTDSXX_L2_2.fq > snap1-pe.sam
+samtools view -S -b -h -F 4 snap1F2_bwa.sam >snap1F2_mapped.bam
+
+samtools sort -T snap1F2 -o snap1F2_mapped_sort.bam snap1F2_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=snap1F2_mapped_sort.bam O=snap1F2_mapped_sort_RG.bam RGID=snap1F2 RGLB=snap1F2 RGPL=illumina RGPU=snap1F2 RGSM=snap1F2 2>snap1F2_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I snap1F2_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  snap1F2.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+~/program/bwa-0.7.17/bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   snap1F2_CSFP190046701-1a_HMJLTDSXX_L2_1.fq snap1F2_CSFP190046701-1a_HMJLTDSXX_L2_2.fq > snap1F2-pe.sam
+samtools view -S -b -h -F 4 snap1F2-pe.sam >snap1F2pe_mapped.bam
+samtools sort -T snap1F2_pe -o snap1F2pe_mapped_sort.bam snap1F2pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=snap1F2pe_mapped_sort.bam O=snap1F2pe_mapped_sort_RG.bam RGID=snap1F2 RGLB=snap1F2 RGPL=illumina RGPU=snap1F2 RGSM=snap1F2 2>snap1F2pe_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I snap1F2pe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  snap1F2pe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+
+* snap2F2
+#!/bin/bash
+#PBS -l ncpus=6
+#PBS -l mem=8G
+cd /scratch/Xiao_Group/Mutant_sequencing/snap1F2
+gunzip *.gz
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  snap2F2_CSFP190133167-1a_HMHTFDSXX_L1_1.fq >snap2F2_1.sai
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  snap2F2_CSFP190133167-1a_HMHTFDSXX_L1_2.fq >snap2F2_2.sai
+bwa sampe  /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10 snap2F2_1.sai snapsF2_2.sai snap2F2_CSFP190133167-1a_HMHTFDSXX_L1_1.fq snap2F2_CSFP190133167-1a_HMHTFDSXX_L1_2.fq >snap2F2_bwa.sam 2>snap2F2_bwa.e
+bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   snap2F2_CSFP190133167-1a_HMHTFDSXX_L1_1.fq snap2F2_CSFP190133167-1a_HMHTFDSXX_L1_2.fq > snap2-pe.sam
+samtools view -S -b -h -F 4 snap2F2_bwa.sam >snap2F2_mapped.bam
+
+samtools sort -T snap2F2 -o snap2F2_mapped_sort.bam snap2F2_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=snap2F2_mapped_sort.bam O=snap2F2_mapped_sort_RG.bam RGID=snap2F2 RGLB=snap2F2 RGPL=illumina RGPU=snap2F2 RGSM=snap2F2 2>snap2F2_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I snap2F2_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  snap2F2.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+~/program/bwa-0.7.17/bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   snap2F2_CSFP190133167-1a_HMHTFDSXX_L1_1.fq snap2F2_CSFP190133167-1a_HMHTFDSXX_L1_2.fq > snap2F2-pe.sam
+samtools view -S -b -h -F 4 snap2F2-pe.sam >snap2F2pe_mapped.bam
+samtools sort -T snap2F2_pe -o snap2F2pe_mapped_sort.bam snap2F2pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=snap2F2pe_mapped_sort.bam O=snap2F2pe_mapped_sort_RG.bam RGID=snap2F2 RGLB=snap2F2 RGPL=illumina RGPU=snap2F2 RGSM=snap2F2 2>snap2F2pe_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I snap2F2pe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  snap2F2pe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+
+
+* 7RF2R
+#!/bin/bash
+#PBS -l ncpus=6
+#PBS -l mem=8G
+cd /scratch/Xiao_Group/Mutant_sequencing/s_7RF2
+gunzip *.gz
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_7RF2R_CSFP190046735-1a_HMHTFDSXX_L1_1.fq >7RF2_1.sai
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_7RF2R_CSFP190046735-1a_HMHTFDSXX_L1_2 >7RF2_2.sai
+bwa sampe  /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10 7RF2_1.sai 7RF2_2.sai s_7RF2R_CSFP190046735-1a_HMHTFDSXX_L1_1.fq s_7RF2R_CSFP190046735-1a_HMHTFDSXX_L1_2.fq >7RF2_bwa.sam 2>7RF2_bwa.e
+bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10    s_7RF2R_CSFP190046735-1a_HMHTFDSXX_L1_1.fq s_7RF2R_CSFP190046735-1a_HMHTFDSXX_L1_2 > 7RF2-pe.sam
+samtools view -S -b -h -F 4 7RF2_bwa.sam >7RF2_mapped.bam
+
+samtools sort -T 7RF2 -o 7RF2_mapped_sort.bam 7RF2_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=7RF2_mapped_sort.bam O=7RF2_mapped_sort_RG.bam RGID=7RF2 RGLB=7RF2 RGPL=illumina RGPU=7RF2 RGSM=7RF2 2>7RF2_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 7RF2_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  7RF2.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+~/program/bwa-0.7.17/bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_7RF2R_CSFP190046735-1a_HMHTFDSXX_L1_1.fq s_7RF2R_CSFP190046735-1a_HMHTFDSXX_L1_2 > 7RF2-pe.sam
+samtools view -S -b -h -F 4 7RF2-pe.sam >7RF2pe_mapped.bam
+samtools sort -T 7RF2_pe -o 7RF2pe_mapped_sort.bam 7RF2pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=7RF2pe_mapped_sort.bam O=7RF2pe_mapped_sort_RG.bam RGID=7RF2 RGLB=7RF2 RGPL=illumina RGPU=7RF2 RGSM=7RF2 2>7RF2pe_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 7RF2pe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  7RF2pe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+
+
+* 7RF2S
+#!/bin/bash
+#PBS -l ncpus=6
+#PBS -l mem=8G
+cd /scratch/Xiao_Group/Mutant_sequencing/s_7RF2S
+gunzip *.gz
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10 s_7RF2S_CSFP190046736-1a_HMHTFDSXX_L1_1.fq >7RF2S_1.sai
+bwa aln -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10  s_7RF2S_CSFP190046736-1a_HMHTFDSXX_L1_2.fq >7RF2S_2.sai
+bwa sampe  /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10 7RF2S_1.sai 7RF2S_2.sai s_7RF2S_CSFP190046736-1a_HMHTFDSXX_L1_1.fq s_7RF2S_CSFP190046736-1a_HMHTFDSXX_L1_2.fq >7RF2S_bwa.sam 2>7RF2S_bwa.e
+samtools view -S -b -h -F 4 7RF2S_bwa.sam >7RF2S_mapped.bam
+samtools sort -T 7RF2 -o 7RF2S_mapped_sort.bam 7RF2S_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=7RF2S_mapped_sort.bam O=7RF2S_mapped_sort_RG.bam RGID=7RF2S RGLB=7RF2S RGPL=illumina RGPU=7RF2S RGSM=7RF2S 2>7RF2S_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 7RF2_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  7RF2.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+~/program/bwa-0.7.17/bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10 s_7RF2S_CSFP190046736-1a_HMHTFDSXX_L1_1.fq s_7RF2S_CSFP190046736-1a_HMHTFDSXX_L1_2.fq > 7RF2S-pe.sam
+samtools view -S -b -h -F 4 7RF2S-pe.sam >7RF2Spe_mapped.bam
+samtools sort -T 7RF2S_pe -o 7RF2Spe_mapped_sort.bam 7RF2Spe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=7RF2Spe_mapped_sort.bam O=7RF2Spe_mapped_sort_RG.bam RGID=7RF2S RGLB=7RF2S RGPL=illumina RGPU=7RF2S RGSM=7RF2S 2>7RF2Spe_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I 7RF2Spe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  7RF2Spe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+
+
+
+
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 14RF2_mapped_sort_RG.bam | bcftools call -mv -Ov >14RF2.raw_SNP2.vcf
+samtools mpileup --skip-indels  --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 14RF2pe_mapped_sort_RG.bam | bcftools call -mv -Ov >14RF2pe.raw_SNP2.vcf
+
+samtools mpileup  --skip-indels  --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 6RF2_mapped_sort_RG.bam | bcftools call -mv -Ov >6RF2.raw_SNP2.vcf
+samtools mpileup --skip-indels  --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 6RF2pe_mapped_sort_RG.bam | bcftools call -mv -Ov >6RF2pe.raw_SNP2.vcf
+
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 10RF2_mapped_sort_RG.bam | bcftools call -mv -Ov >10RF2.raw_SNP2.vcf
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 10RF2pe_mapped_sort_RG.bam | bcftools call -mv -Ov >10RF2pe.raw_SNP2.vcf
+
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 16RF2_mapped_sort_RG.bam | bcftools call -mv -Ov >16RF2.raw_SNP2.vcf
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 16RF2pe_mapped_sort_RG.bam | bcftools call -mv -Ov >16RF2pe.raw_SNP2.vcf
+
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf  /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa snap1F2_mapped_sort_RG.bam | bcftools call -mv -Ov >snap1RF2.raw_SNP2.vcf
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf  /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa snap1F2pe_mapped_sort_RG.bam | bcftools call -mv -Ov >snap1RF2pe.raw_SNP2.vcf
+
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa snap2F2_mapped_sort_RG.bam | bcftools call -mv -Ov >snap2RF2.raw_SNP2.vcf
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa snap2F2pe_mapped_sort_RG.bam | bcftools call -mv -Ov >snap2RF2pe.raw_SNP2.vcf
+
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 10RF2_mapped_sort_RG.bam | bcftools call -mv -Ov >10RF2.raw_SNP2.vcf
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 10RF2pe_mapped_sort_RG.bam | bcftools call -mv -Ov >10RF2pe.raw_SNP2.vcf
+
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 7RF2_mapped_sort_RG.bam | bcftools call -mv -Ov >7RF2R.raw_SNP2.vcf
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 7RF2pe_mapped_sort_RG.bam | bcftools call -mv -Ov >7RF2Rpe.raw_SNP2.vcf
+
+
+samtools mpileup --skip-indels --output-tags DP,AD,SP  -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 7RF2S_mapped_sort_RG.bam | bcftools call -mv -Ov -Vindels >7RF2S.raw_SNP2.vcf
+samtools mpileup --skip-indels --output-tags DP,AD,SP  -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa 7RF2Spe_mapped_sort_RG.bam | bcftools call -mv -Ov >7RF2Spe.raw_SNP2.vcf
+
+for i in *.vcf; do echo $i;java -jar snpEff.jar  TAIR10 -classic -o GATK -no-downstream -no-upstream $i >${i/vcf/snpEff};done
+
+java -jar ~/program/snpEff_max/snpEff.jar TAIR10 -classic -o GATK -no-downstream -no-upstream snap26F2.raw_SNP2.vcf >test.snpEff
+
+
+* snap6
+#!/bin/bash
+#PBS -l ncpus=6
+#PBS -l mem=8G
+cd /home/ywu/2019/snap6/
+~/program/bwa-0.7.17/bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   snap6_1.fq snap_2.fq >snap6-pe.sam
+samtools view -S -b -h -F 4 snap6-pe.sam >snap6pe_mapped.bam
+samtools sort -T snap6_pe -o snap6pe_mapped_sort.bam snap6pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=snap6pe_mapped_sort.bam O=snap6pe_mapped_sort_RG.bam RGID=snap6 RGLB=snap6 RGPL=illumina RGPU=snap6 RGSM=snap6 2>snap6pe_RG.e
+java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I snap6pe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  6RF2pe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa snap6pe_mapped_sort_RG.bam | bcftools call -mv -Ov >snap6pe.raw_SNP.vcf
+
+
+* snap16
+#!/bin/bash
+#PBS -l ncpus=6
+#PBS -l mem=8G
+cd /home/ywu/2019/snap16/
+~/program/bwa-0.7.17/bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   snap16_1.fq snap16_2.fq >snap16-pe.sam
+samtools view -S -b -h -F 4 snap16-pe.sam >snap16pe_mapped.bam
+samtools sort -T snap16_pe -o snap16pe_mapped_sort.bam snap16pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=snap16pe_mapped_sort.bam O=snap16pe_mapped_sort_RG.bam RGID=snap16 RGLB=snap16 RGPL=illumina RGPU=snap16 RGSM=snap6 2>snap16pe_RG.e
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa snap16pe_mapped_sort_RG.bam | bcftools call -mv -Ov >snap16pe.raw_SNP.vcf
+
+*snab1F2
+#!/bin/bash
+#PBS -l ncpus=6
+#PBS -l mem=8G
+cd /home/ywu/2019/snab1F2/
+~/program/bwa-0.7.17/bwa mem -t 6 /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10   snab1F2_1.fq snab1F2_2.fq >snab1F2-pe.sam
+samtools view -S -b -h -F 4 snab1F2-pe.sam >snab1F2pe_mapped.bam
+samtools sort -T snapb1F2_pe -o snab1F2pe_mapped_sort.bam snab1F2pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=snab1F2pe_mapped_sort.bam O=snab1F2pe_mapped_sort_RG.bam RGID=snab1F2 RGLB=snab1F2 RGPL=illumina RGPU=snab1F2 RGSM=snab1F2 2>snab1F2pe_RG.e
+samtools mpileup --skip-indels --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa snab1F2pe_mapped_sort_RG.bam | bcftools call -mv -Ov >snab1F2pe.raw_SNP.vcf
+
+#!/bin/bash
+#PBS -l ncpus=16
+#PBS -l mem=32G
+cd /scratch/Xiao_Group/snap114/
+#gunzip *.gz
+#~/program/bwa-0.7.17/bwa mem -t 6 /home/ywu/Xiaolab/Mutant_sequencing/TAIR10/TAIR10   snap114_1.fq snap114_2.fq > snap114-pe.sam
+#samtools view -S -b -h -F 4 snap114-pe.sam >snap114pe_mapped.bam
+samtools sort -T snap114_pe -o snap114pe_mapped_sort.bam snap114pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=snap114pe_mapped_sort.bam O=snap114pe_mapped_sort_RG.bam RGID=snap114 RGLB=snap114 RGPL=illumina RGPU=snap114 RGSM=snap114 2>snap114pe_RG.e
+#java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I snap114pe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  snap114pe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+samtools mpileup  --skip-indels  --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa snap114pe_mapped_sort_RG.bam | bcftools call -mv -Ov >snap114.raw_SNP2.vcf
+
+
+
+#!/bin/bash
+#PBS -l ncpus=16
+#PBS -l mem=32G
+cd /scratch/Xiao_Group/snap4N52/
+#gunzip *.gz
+~/program/bwa-0.7.17/bwa mem -t 6 /home/ywu/Xiaolab/Mutant_sequencing/TAIR10/TAIR10   snap4N52_1.fq snap4N52_2.fq > snap4N52-pe.sam
+samtools view -S -b -h -F 4 snap4N52-pe.sam >snap4N52pe_mapped.bam
+samtools sort -T snap4N52_pe -o snap4N52pe_mapped_sort.bam snap4N52pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=snap4N52pe_mapped_sort.bam O=snap4N52pe_mapped_sort_RG.bam RGID=snap4N52 RGLB=snap4N52 RGPL=illumina RGPU=snap4N52 RGSM=snap4N52 2>snap4N52pe_RG.e
+#java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I snap4N52pe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  snap4N52pe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+samtools mpileup  --skip-indels  --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa snap4N52pe_mapped_sort_RG.bam | bcftools call -mv -Ov >snap4N52.raw_SNP2.vcf
+
+
+
+#!/bin/bash
+#PBS -l ncpus=16
+#PBS -l mem=32G
+cd /home/ywu/Xiaolab/2019/snap7F2/
+#gunzip *.gz
+~/program/bwa-0.7.17/bwa mem -t 6 /home/ywu/Xiaolab/Mutant_sequencing/TAIR10/TAIR10   snap7F2_1.fq snap7F2_2.fq > snap7F2-pe.sam
+samtools view -S -b -h -F 4 snap7F2-pe.sam >snap7F2pe_mapped.bam
+samtools sort -T snap7F2_pe -o snap7F2pe_mapped_sort.bam snap7F2pe_mapped.bam
+java -jar /home/max/ywu/program/picard/picard-tools-1.140/picard.jar  AddOrReplaceReadGroups I=snap7F2pe_mapped_sort.bam O=snap7F2pe_mapped_sort_RG.bam RGID=snap7F2 RGLB=snap7F2 RGPL=illumina RGPU=snap7F2 RGSM=snap7F2 2>snap7F2pe_RG.e
+#java -jar /home/max/ywu/program/GATK30/GenomeAnalysisTK.jar -R /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa -l INFO -I snap7F2pe_mapped_sort_RG.bam  -T UnifiedGenotyper -glm BOTH -o  snap7F2pe.raw.vcf -out_mode EMIT_VARIANTS_ONLY
+samtools mpileup  --skip-indels  --output-tags DP,AD,SP -uf /scratch/Xiao_Group/Mutant_sequencing/TAIR10/TAIR10.fa snap7F2pe_mapped_sort_RG.bam | bcftools call -mv -Ov >snap7F2.raw_SNP2.vcf
